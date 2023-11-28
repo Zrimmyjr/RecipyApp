@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+    
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+              integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+              crossorigin="anonymous" />
+        <link rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+              crossorigin="anonymous" />
+        <style>
+            #loading-spinner {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                z-index: 1000;
+                align-content:center;
+            }
+
+            .bg-dark {
+                background-color: black;
+            }
+
+            .body {
+                background: linear-gradient(to bottom, black, cyan); /* Define the gradient */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            /* Style the header */
+            .header {
+                margin-top: 5px;
+                outline: 2px inset black;
+                padding: 30px;
+                text-align: center;
+                font-size: 50px;
+            }
+
+            .add_ingredient_container {
+                margin-top: 25px;
+                padding: 5px;
+                text-align: center;
+                font-size: 12px;
+                outline: 2px inset black
+            }
+
+            .ingredient_container {
+                min-block-size: 150px;
+                padding: 5px;
+                text-align: center;
+                font-size: 12px;
+                outline: 2px inset black
+            }
+
+            .recipe_container {
+                margin-top: 25px;
+                min-block-size: 150px;
+                padding: 5px;
+                text-align: center;
+                font-size: 12px;
+                outline: 2px inset black
+            }
+
+            .footer {
+                margin-top: 25px;
+                outline: 2px inset black;
+                padding: 30px;
+                text-align: center;
+                font-size: 35px;
+            }
+
+            .centered-list {
+                text-align: center;
+            }
+
+            body {
+                height: auto;
+                background: linear-gradient(to right, white, cyan);
+                text-align: center;
+            }
+
+            button {
+                border: none;
+                border-radius: 4px;
+                padding: 10px;
+            }
+
+                button:hover {
+                    background-color: #333;
+                }
+        </style>
+        <title>{% block title %}Home{% endblock %}</title>
+    </head>
+    <body>
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <div class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <a class="nav-item nav-link" id="home" href="/">Home</a>
+                    <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+                    <a class="nav-item nav-link" id="about" href="/about">About</a>
+                    <a class="nav-item nav-link" id="contact" href="/contact">Contact</a>
+                    {% else %}
+                    <a class="nav-item nav-link" id="login" href="/login">Login</a>
+                    <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+                    <a class="nav-item nav-link" id="about" href="/about">About</a>
+                    <a class="nav-item nav-link" id="contact" href="/contact">Contact</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %} {% if category ==
+        'error' %}
+        <div class="alert alert-danger alter-dismissable fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% else %}
+        <div class="alert alert-success alter-dismissable fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %} {% endfor %} {% endif %} {% endwith %}
+
+        <div class="container">{% block content %} {% endblock %}</div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"></script>
+        {% block javascript %}
+        <script type="text/javascript">
+            function deleteNote(noteId) {
+                fetch("/delete-note", {
+                    method: "POST",
+                    body: JSON.stringify({ noteId: noteId }),
+                }).then((_res) => {
+                    window.location.href = "/";
+                });
+            }
+        </script>
+        <script type="text/javascript">
+            function deleteRecipe(recipe_id) {
+                fetch("/delete_recipe", {
+                    method: "POST",
+                    body: JSON.stringify({ recipe_id: recipe_id }),
+                }).then((_res) => {
+                    window.location.href = "/";
+                });
+            }
+        </script>
+        <script>
+            function showLoadingSpinner() {
+                $('#loading-spinner').show();
+            }
+
+            function hideLoadingSpinner() {
+                $('#loading-spinner').hide();
+            }
+
+            function requestGPTResponse() {
+                showLoadingSpinner();
+
+                $.ajax({
+                    url: '/send-to-chatGPT',
+                    type: 'GET',
+                    success: function (response) {
+                        hideLoadingSpinner();
+                        $('#response-container').html(response);
+                    },
+                    error: function (error) {
+                        hideLoadingSpinner();
+                        console.error('Error:', error);
+                    }
+                });
+            }
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get the login form element
+                var loginForm = document.getElementById('loginForm');
+
+                // Add a submit event listener to the form
+                if (loginForm) {
+                    loginForm.addEventListener('submit', function (event) {
+                        // Prevent the default form submission behavior
+                        event.preventDefault();
+
+                        // Optionally, you can add client-side validation here
+
+                        // Submit the form using JavaScript
+                        loginForm.submit();
+                    });
+                }
+            });
+        </script>
+        {% endblock %}
+    </body>
+</html >

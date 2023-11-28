@@ -1,0 +1,172 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+    <div class="header">
+        <h2>Reci.Py</h2>
+    </div>
+
+    <div class="add_ingredient_container">
+        <h1>Enter Ingredients</h1>
+        <label for="cuisine">Choose a cuisine: </label>
+        <form method="POST" id="recipeForm">
+            <select name="cuisine" id="cuisine">
+                <option value="any">Any</option>
+                <optgroup label="African">
+                    <option value="African">African</option>
+                    <option value="Central African">Central African</option>
+                    <option value="East African">East African</option>
+                    <option value="North African">North African</option>
+                </optgroup>
+                <optgroup label="Americas">
+                    <option value="North American">North American</option>
+                    <option value="American">American</option>
+                    <option value="Central American">Central American</option>
+                    <option value="South American">South American</option>
+                    <option value="Caribbean">Caribbean</option>
+                </optgroup>
+                <optgroup label="Asian">
+                    <option value="Central Asian">Central Asian</option>
+                    <option value="East Asian cuisine">East Asian cuisine</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="South Asian">South Asian</option>
+                    <option value="Indian">Indian</option>
+                    <option value="Southeast Asian">Southeast Asian</option>
+                    <option value="Indonesian">Indonesian</option>
+                    <option value="West Asian">West Asian</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Korean">Korean</option>
+                    <option value="Thai">Thai</option>
+                </optgroup>
+                <optgroup label="European">
+                    <option value="Italian">Italian</option>
+                    <option value="French">French</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="German">German</option>
+                    <!-- Add more options here -->
+                    <option value="Greek">Greek</option>
+                    <option value="Russian">Russian</option>
+                </optgroup>
+                <optgroup label="Oceanic">
+                    <option value="Australian">Australian</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Fijian">Fijian</option>
+                    <option value="Hawaiian">Hawaiian</option>
+                    <option value="Polynesian">Polynesian</option>
+                    <option value="Micronesian">Micronesian</option>
+                    <option value="Melanesian">Melanesian</option>
+                    <!-- Add more options here -->
+                    <option value="Tahitian">Tahitian</option>
+                    <option value="Samoan">Samoan</option>
+                    <option value="Papua New Guinean">Papua New Guinean</option>
+                </optgroup>
+                <optgroup label="Vegetarian">
+                    <option value="Italian Vegetarian">Italian Vegetarian</option>
+                    <option value="Indian Vegetarian">Indian Vegetarian</option>
+                    <option value="Mediterranean Vegetarian">Mediterranean Vegetarian</option>
+                    <option value="Thai Vegetarian">Thai Vegetarian</option>
+                    <option value="Mexican Vegetarian">Mexican Vegetarian</option>
+                    <option value="Greek Vegetarian">Greek Vegetarian</option>
+                </optgroup>
+                <optgroup label="Vegan">
+                    <option value="Vegan Burgers">Vegan Burgers</option>
+                    <option value="Plant-Based Sushi">Plant-Based Sushi</option>
+                    <option value="Vegan Desserts">Vegan Desserts</option>
+                </optgroup>
+                <optgroup label="Molecular Gastronomy">
+                    <option value="Spherification">Spherification</option>
+                    <option value="Foams">Foams</option>
+                    <option value="Gels">Gels</option>
+                    <option value="Deconstruction">Deconstruction</option>
+                    <option value="Liquid Nitrogen Creations">Liquid Nitrogen Creations</option>
+                    <option value="Edible Films">Edible Films</option>
+                    <option value="Molecular Mixology">Molecular Mixology</option>
+                    <!-- Add more options here -->
+                    <option value="Carbonated Fruit">Carbonated Fruit</option>
+                    <option value="Aero Chocolate">Aero Chocolate</option>
+                    <option value="Nitro Popcorn">Nitro Popcorn</option>
+                    <option value="Flavor Changing Lollipops">Flavor Changing Lollipops</option>
+                </optgroup>
+                <optgroup label="Religious">
+                    <option value="Kosher">Kosher</option>
+                    <option value="Halal">Halal</option>
+                    <option value="Hindu Vegetarian">Hindu Vegetarian</option>
+                    <option value="Buddhist Vegetarian">Buddhist Vegetarian</option>
+                    <option value="Jain Vegetarian">Jain Vegetarian</option>
+                    <option value="Christian Feast Foods">Christian Feast Foods</option>
+                    <option value="Eid-al-Fitr Specialties">Eid-al-Fitr Specialties</option>
+                    <!-- Add more options here -->
+                    <option value="Sabbath Meals">Sabbath Meals</option>
+                    <option value="Ramadan Iftar Dishes">Ramadan Iftar Dishes</option>
+                    <option value="Passover Seder Meals">Passover Seder Meals</option>
+                    <option value="Diwali Sweets">Diwali Sweets</option>
+                </optgroup>
+                <optgroup label="Historical">
+                    <option value="Ancient Egyptian">Ancient Egyptian</option>
+                    <option value="Medieval European">Medieval European</option>
+                    <option value="Ancient Roman">Ancient Roman</option>
+                    <option value="Viking Age">Viking Age</option>
+                    <option value="Aztec Empire">Aztec Empire</option>
+                    <option value="Ancient Chinese">Ancient Chinese</option>
+                    <option value="Colonial American">Colonial American</option>
+                    <!-- Add more options here -->
+                    <option value="Byzantine Cuisine">Byzantine Cuisine</option>
+                    <option value="Ancient Greek">Ancient Greek</option>
+                    <option value="Mughal Empire">Mughal Empire</option>
+                    <option value="Japanese Edo Period">Japanese Edo Period</option>
+                </optgroup>
+            </select>
+            <textarea name="note" id="note" class="form-control"></textarea>
+            <br />
+            <div align="center">
+                <button type="submit" class="btn btn-primary" id="submitBtn" onclick="requestGPTResponse()">Enter Ingredients</button>
+            </div>
+        </form>
+    </div>
+    <br />
+    <div class="ingredient_container">
+        <h1>Ingredients</h1>
+        <ul class="list-group list-group-flush" id="notes">
+            {% for note in user.notes %}
+            <li class="list-group-item">
+                {{ note.data }}
+                <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+<div class="recipe_container">
+    <h1>Recipes</h1>
+    <ul class="list-group list-group-flush" id="recipes">
+        {% for recipe in user.recipes %}
+        <li class="list-group-item centered-list">
+            <h2>{{ recipe.recipe_name }}</h2>
+            <ul class="list-unstyled">
+                <li><strong>Ingredients:</strong></li>
+                <ul>
+                    {% for ingredient in recipe.ingredients %}
+                    <li>
+                        {{ ingredient.amount }} {{ ingredient.unit.unit_name }} of {{ ingredient.name }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                <li><strong>Instructions:</strong></li>
+                <ol>
+                    {% for instruction in recipe.instructions %}
+                    <li>{{ instruction.step_text }}</li>
+                    {% endfor %}
+                </ol>
+                <li><strong>Total Time to Cook:</strong> {{ recipe.cooking_time.time_in_minutes }} minutes</li>
+            </ul>
+            <button type="button" class="close" onClick="deleteRecipe({{ recipe.recipe_id }})">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="footer">
+   <p>Team HIM - RMU - 2023</p>
+</div>
+    {% endblock %}

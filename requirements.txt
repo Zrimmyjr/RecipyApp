@@ -1,0 +1,14 @@
+flask
+website
+Flask-SQLAlchemy
+flask-login
+python-dotenv
+openai==0.28
+Werkzeug
+pysqlcipher3
+gunicorn
+passlib
+Flask-WTF
+argon2_cffi
+email_validator
+Flask-Security
